@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f2e8">
+<title>EasyPill · Daily medicines &amp; live location</title>
+<style>
+:root{--cream:#f7f2e8;--cream-deep:#efe7d8;--paper:#fffdf8;--ink:#17322c;--ink-soft:#52675e;--line:#e6ddcb;--green:#2e6b4f;--green-deep:#1c4a37;--green-soft:#e8f1ea;--clay:#b4452f;--clay-soft:#fbece7;--shadow:0 1px 2px rgba(23,50,44,.04),0 12px 32px -18px rgba(23,50,44,.35);--lift:0 2px 4px rgba(23,50,44,.05),0 22px 48px -24px rgba(23,50,44,.45);--display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{min-height:100vh;background:var(--cream);color:var(--ink);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased;background-image:radial-gradient(900px 480px at 8% -8%,rgba(46,107,79,.1),transparent 65%),radial-gradient(760px 420px at 96% 4%,rgba(201,122,27,.12),transparent 62%);background-repeat:no-repeat}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.015em;line-height:1.12;color:var(--ink)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:10px}
+.hidden{display:none!important}
+.hide-sm{display:inline}
+@media(max-width:639px){.hide-sm{display:none}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+.pad{padding:22px}
+.eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.h2{font-size:1.5rem}
+.h3{font-size:1.3rem}
+.muted{color:var(--ink-soft);font-size:.95rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.75rem}
+.row-between{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+.vstack{display:grid;gap:10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.grid2{display:grid;gap:10px}
+@media(min-width:640px){.grid2{grid-template-columns:1fr 1fr}}
+.stack>*+*{margin-top:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 18px;border-radius:16px;font-weight:700;font-size:1rem;border:1px solid var(--line);background:var(--paper);color:var(--ink);transition:background .15s,border-color .15s,color .15s}
+.btn:hover{border-color:rgba(46,107,79,.45)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.on{background:var(--green);border-color:var(--green);color:var(--paper)}
+.btn-primary{background:var(--green);border-color:var(--green);color:var(--paper);box-shadow:0 10px 24px -14px rgba(28,74,55,.9)}
+.btn-primary:hover{background:var(--green-deep);border-color:var(--green-deep)}
+.btn-ghost{min-height:44px;padding:0 10px;border:0;background:none;color:var(--ink-soft)}
+.btn-danger{background:var(--clay);border-color:var(--clay);color:var(--paper)}
+.btn-sm{min-height:44px;padding:0 14px;font-size:.9rem;border-radius:999px}
+.btn-lg{min-height:60px;font-size:1.1rem}
+.btn-block{width:100%}
+.btn.stop{background:var(--clay-soft);border-color:rgba(180,69,47,.35);color:var(--clay);box-shadow:none}
+.btn-dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:.875rem;font-weight:600;border:1px solid var(--line);background:var(--cream);color:var(--ink-soft);white-space:nowrap}
+.pill.ok{border:0;background:var(--green-soft);color:var(--green-deep)}
+.pulse{position:relative;display:inline-block;width:10px;height:10px;border-radius:999px;background:#3f8f63}
+.pulse::after{content:"";position:absolute;inset:-5px;border-radius:999px;border:2px solid rgba(63,143,99,.55);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.6);opacity:.9}70%,100%{transform:scale(1.6);opacity:0}}
+@media(prefers-reduced-motion:reduce){.pulse::after{animation:none}}
+input[type=text],input[type=email],input[type=password],input[type=time],textarea{width:100%;min-height:54px;padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:var(--paper);font-size:1.05rem;font-weight:600}
+textarea{min-height:76px;font-weight:400;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--green)}
+.field{display:block;font-weight:700;font-size:.95rem;margin-bottom:6px}
+.check{display:inline-flex;align-items:center;gap:8px;margin-top:10px;min-height:40px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--green)}
+.err{color:var(--clay);font-weight:700;font-size:.92rem;margin-top:10px}
+.notice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-radius:16px;background:var(--green-soft);color:var(--green-deep);font-weight:600;font-size:.95rem}
+.notice.err{background:var(--clay-soft);color:var(--clay)}
+.notice.err{margin-top:0}
+
+/* Sign-in screen */
+.auth{min-height:100vh;display:grid;place-items:center;padding:40px 16px}
+.auth-wrap{width:100%;max-width:440px}
+.auth-brand{text-align:center;margin-bottom:24px}
+.brand-mark{width:64px;height:64px;margin:0 auto;border-radius:18px;background:var(--green);color:var(--paper);display:grid;place-items:center;font-size:30px;box-shadow:var(--lift)}
+.auth-brand h1{margin-top:16px;font-size:2.4rem}
+.auth-brand p{margin-top:8px;color:var(--ink-soft)}
+.auth-card{padding:28px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--cream-deep);border-radius:16px;padding:4px}
+.tab{min-height:48px;border-radius:12px;font-weight:700;color:var(--ink-soft)}
+.tab[aria-selected=true]{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.footnote{margin-top:20px;text-align:center;font-size:.8rem;color:var(--ink-soft)}
+
+/* Header */
+.header{position:sticky;top:0;z-index:20;background:rgba(247,242,232,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(230,221,203,.85)}
+.header-in{max-width:1152px;margin:0 auto;padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+@media(min-width:640px){.header-in{padding:12px 24px}}
+.brand{display:flex;align-items:center;gap:10px;text-align:left}
+.badge{width:40px;height:40px;border-radius:14px;background:var(--green);color:var(--paper);display:grid;place-items:center;font-size:20px;box-shadow:0 8px 18px -12px rgba(28,74,55,.9)}
+.brand b{display:block;font-family:var(--display);font-size:1.25rem;font-weight:600;line-height:1}
+.brand small{display:none;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+@media(min-width:640px){.brand small{display:block}}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.nav-link{padding:8px 14px;border-radius:999px;font-weight:600;font-size:.9rem;color:var(--ink-soft)}
+.nav-link:hover{background:var(--paper);color:var(--ink)}
+.nav-link[aria-current=page]{background:var(--green-soft);color:var(--green-deep)}
+.call{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:600;font-size:.9rem}
+.call:hover{background:var(--green-deep)}
+.user{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600;color:var(--ink-soft);margin-left:4px}
+.avatar{width:36px;height:36px;border-radius:999px;background:var(--green-soft);color:var(--green-deep);display:grid;place-items:center;font-family:var(--display);font-weight:600;flex-shrink:0}
+
+/* Layout */
+.container{max-width:1152px;margin:0 auto;padding:20px 16px 48px}
+@media(min-width:640px){.container{padding:32px 24px 56px}}
+.status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.875rem;color:var(--ink-soft);margin-bottom:16px}
+.layout{display:grid;gap:24px}
+@media(min-width:1024px){.layout{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;border-radius:28px;background:var(--green-deep);color:var(--paper);box-shadow:var(--lift);background-image:radial-gradient(420px 220px at 88% 0%,rgba(201,122,27,.4),transparent 70%),radial-gradient(380px 260px at 0% 100%,rgba(255,253,248,.16),transparent 65%)}
+.hero-in{position:relative;padding:24px;display:flex;flex-direction:column;gap:24px}
+@media(min-width:640px){.hero-in{padding:32px;flex-direction:row;align-items:center;justify-content:space-between}}
+.hero .eyebrow{color:rgba(255,253,248,.72)}
+.hero h1{margin-top:8px;font-size:2rem;color:var(--paper)}
+@media(min-width:640px){.hero h1{font-size:2.5rem}}
+.hero-desc{margin-top:8px;max-width:440px;color:rgba(255,253,248,.86)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(255,253,248,.13);border:1px solid rgba(255,253,248,.22);font-size:.875rem;font-weight:600}
+.ring{position:relative;width:124px;height:124px;margin:0 auto;flex-shrink:0}
+@media(min-width:640px){.ring{margin:0}}
+.ring svg{transform:rotate(-90deg)}
+.ring-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-n{font-family:var(--display);font-size:1.85rem;font-weight:600;line-height:1}
+.ring-n span{font-size:1.2rem;opacity:.6}
+.ring-l{margin-top:4px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+
+/* Schedule bar, panels */
+.bar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.bar h2{margin-top:4px;font-size:1.5rem}
+.panel{border-radius:24px;border:2px solid rgba(46,107,79,.3);background:rgba(232,241,234,.55);padding:20px;box-shadow:var(--shadow)}
+@media(min-width:640px){.panel{padding:24px}}
+.row-t{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px}
+@media(min-width:640px){.row-t{flex-direction:row;align-items:center;justify-content:space-between}}
+.row-t input[type=time]{width:150px;min-height:52px;font-size:1.15rem}
+.circ{width:40px;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--paper);display:grid;place-items:center;font-size:16px;color:var(--ink-soft)}
+.circ.on{background:var(--green);border-color:var(--green);color:var(--paper)}
+.chip-btn{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);font-size:.9rem;font-weight:600}
+.chip-btn.on{background:var(--green);border-color:var(--green);color:var(--paper)}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Medicine cards */
+.meds{display:grid;gap:16px}
+.med{position:relative;overflow:hidden;border-radius:24px;border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow)}
+.med.done{background:#f3f8f3;border-color:#cfe0d2}
+.stripe{position:absolute;top:0;bottom:0;left:0;width:7px}
+.med-body{padding:20px 20px 20px 24px}
+@media(min-width:640px){.med-body{padding:24px 24px 24px 28px}}
+.med-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+.slot{display:flex;align-items:center;gap:12px}
+.slot-ic{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.time-btn{margin-top:2px;display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 6px;border-radius:999px;font-weight:700;color:var(--green-deep);text-decoration:underline;text-decoration-color:rgba(46,107,79,.45);text-underline-offset:4px}
+.med h3{margin-top:16px;font-size:1.5rem}
+.med.done h3{color:var(--ink-soft);text-decoration:line-through}
+.dose{font-weight:600;color:var(--green);font-size:1.05rem}
+.med.done .dose{color:var(--ink-soft)}
+.notes{margin-top:6px;color:var(--ink-soft);font-size:.98rem}
+.take{margin-top:20px;width:100%;min-height:64px;border-radius:16px;background:var(--green);color:var(--paper);font-size:1.12rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 24px -14px rgba(28,74,55,.9)}
+.take:hover{background:var(--green-deep)}
+.done-row{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+@media(min-width:640px){.done-row{flex-direction:row;align-items:center}}
+.done-msg{flex:1;min-height:56px;border-radius:16px;background:var(--green-soft);color:var(--green-deep);font-weight:600;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 16px}
+.edit-btn{margin-top:12px;width:100%;min-height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(247,242,232,.65);color:var(--ink-soft);font-weight:700;font-size:.9rem}
+.edit-btn:hover{border-color:rgba(46,107,79,.45);color:var(--ink)}
+.add-dashed{margin-top:16px;width:100%;min-height:54px;border-radius:18px;border:2px dashed rgba(46,107,79,.35);background:rgba(255,253,248,.75);color:var(--green-deep);font-weight:700}
+.editor{border-radius:18px;border:2px solid rgba(46,107,79,.28);background:rgba(232,241,234,.45);padding:18px}
+.editor .time-input{width:220px;min-height:60px;font-size:1.3rem}
+.hint{display:inline-flex;margin-top:10px;padding:6px 12px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:.8rem;font-weight:700}
+.danger-zone{margin-top:14px;padding-top:12px;border-top:1px solid rgba(46,107,79,.2)}
+.help-head{padding:18px 20px;background:rgba(251,236,231,.72);border-bottom:1px solid var(--line)}
+.help-body{padding:20px;display:grid;gap:16px}
+.emergency{display:flex;align-items:center;justify-content:center;gap:10px;min-height:62px;border-radius:16px;background:var(--clay);color:var(--paper);font-weight:700;font-size:1.1rem;box-shadow:0 12px 24px -16px rgba(180,69,47,.9)}
+.emergency:hover{background:#9c3926}
+.list{list-style:none}
+.contact{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.contact:last-child{border-bottom:0}
+.call-btn{display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-weight:700;font-size:.875rem;white-space:nowrap}
+.call-btn.primary{background:var(--green);border-color:var(--green);color:var(--paper)}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:rgba(247,242,232,.5);border-radius:14px;padding:10px 12px}
+.bar-track{height:10px;border-radius:999px;background:var(--cream-deep);overflow:hidden;margin-top:8px}
+.bar-fill{height:100%;background:var(--green);border-radius:999px;transition:width .4s}
+.tip{display:flex;gap:12px}
+.tip b{font-size:.98rem}
+.tip p{font-size:.875rem;color:var(--ink-soft)}
+.tick{width:24px;height:24px;border-radius:999px;background:var(--green-soft);color:var(--green-deep);display:grid;place-items:center;font-size:.8rem;font-weight:700;flex-shrink:0;margin-top:2px}
+
+/* Maps */
+.map-wrap{position:relative;height:320px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:var(--cream-deep)}
+.map-wrap.tall{height:400px}
+.map-host{position:absolute;inset:0}
+.map-host iframe,.gm-canvas{position:absolute;inset:0;width:100%;height:100%;border:0}
+.map-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center;background-color:#e9e4d5;background-image:linear-gradient(rgba(255,253,248,.85) 2px,transparent 2px),linear-gradient(90deg,rgba(255,253,248,.85) 2px,transparent 2px);background-size:120px 120px}
+.map-empty b{font-family:var(--display);font-size:1.1rem}
+.map-tag{position:absolute;top:12px;left:12px;z-index:2}
+.map-foot{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:8px;padding:36px 12px 12px;color:var(--paper);background:linear-gradient(to top,rgba(23,50,44,.88),rgba(23,50,44,.45) 60%,transparent);pointer-events:none}
+.open-link{pointer-events:auto;display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;background:var(--paper);color:var(--ink);font-size:.75rem;font-weight:700}
+.metrics{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;border:1px solid var(--line);background:rgba(247,242,232,.65);padding:12px;text-align:center}
+.metrics div+div{border-left:1px solid var(--line)}
+.metrics small{display:block;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.metrics b{font-size:.92rem}
+.footer{margin-top:40px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:.875rem;color:var(--ink-soft)}
+@media(min-width:640px){.footer{flex-direction:row;justify-content:space-between;align-items:center}}
+</style>
+</head>
+<body>
+<noscript><p style="padding:24px">EasyPill needs JavaScript turned on to run.</p></noscript>
+
+<!-- SIGN-IN SCREEN -->
+<section id="auth" class="auth hidden" aria-labelledby="auth-title">
+  <div class="auth-wrap">
+    <div class="auth-brand">
+      <div class="brand-mark" aria-hidden="true">💊</div>
+      <h1 id="auth-title">EasyPill</h1>
+      <p>Daily medicines and live location for the whole family.</p>
+    </div>
+    <div class="card auth-card" id="auth-card"></div>
+    <p class="footnote">EasyPill is a reminder tool, not medical advice. In an emergency, call 911.</p>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <header class="header">
+    <div class="header-in">
+      <button type="button" class="brand" data-action="go-today" aria-label="EasyPill home">
+        <span class="badge" aria-hidden="true">💊</span>
+        <span><b>EasyPill</b><small>Medicines &amp; safety</small></span>
+      </button>
+      <nav class="nav" aria-label="Main">
+        <button type="button" class="nav-link" data-action="go-today" data-nav="today" aria-current="page">Today</button>
+        <button type="button" class="nav-link" data-action="go-family" data-nav="family">Family view</button>
+        <a class="call" id="call-primary" href="tel:911">📞 Call</a>
+        <span class="user"><span class="avatar" id="user-initials">ME</span><span class="hide-sm" id="user-name"></span></span>
+        <button type="button" class="btn btn-sm" data-action="sign-out">Sign out</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TODAY -->
+  <main id="view-today" class="container">
+    <p class="status">
+      <span class="pill ok"><span class="pulse"></span> Care circle ready</span>
+      <span>24 Willow Lane, San Francisco</span>
+      <span>·</span>
+      <span>Pacific Time</span>
+    </p>
+    <div id="notice" class="notice hidden" role="status">
+      <span id="notice-text"></span>
+      <button type="button" class="chip-btn" data-action="hide-notice" aria-label="Dismiss message">✕</button>
+    </div>
+
+    <div class="layout" style="margin-top:16px">
+      <div class="stack">
+        <section class="hero" id="hero" aria-label="Today's progress"></section>
+
+        <div class="bar">
+          <div>
+            <p class="eyebrow">Today's medicines</p>
+            <h2 id="sched-title">Your daily schedule</h2>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-sm" id="btn-times" data-action="toggle-times">⏰ Set medicine times</button>
+            <button type="button" class="btn btn-sm" id="btn-edit" data-action="toggle-edit">✎ Add or remove</button>
+          </div>
+        </div>
+
+        <div id="times-panel" class="panel hidden"></div>
+        <div id="add-slot"></div>
+        <div id="meds" class="meds"></div>
+        <button type="button" id="btn-add" class="add-dashed hidden" data-action="open-add">+ Add another medicine</button>
+
+        <section class="card" id="help" style="overflow:hidden" aria-label="Need help"></section>
+      </div>
+
+      <aside class="stack">
+        <section class="card pad" aria-labelledby="loc-title">
+          <div class="row-between">
+            <div>
+              <p class="eyebrow">Where I am</p>
+              <h2 id="loc-title" class="h2">Live location</h2>
+            </div>
+            <span class="pill" id="loc-pill">Paused</span>
+          </div>
+          <p class="muted" style="margin-top:8px">Let family follow the dot on Google Maps while you walk, shop or visit a friend. You can stop at any time.</p>
+
+          <div class="map-wrap" style="margin-top:16px">
+            <div class="map-host" id="loc-map-host"></div>
+            <span class="map-tag"><span class="pill">📍 Google Maps</span></span>
+            <div class="map-foot" id="loc-foot">
+              <div>
+                <div style="font-weight:700;font-size:.9rem" id="foot-name"></div>
+                <div class="mono" id="foot-coords"></div>
+                <div style="font-size:.72rem;opacity:.85" id="foot-acc"></div>
+              </div>
+              <a id="foot-link" class="open-link" target="_blank" rel="noopener" href="#">Open in Maps ↗</a>
+            </div>
+          </div>
+
+          <div class="metrics">
+            <div><small>Accuracy</small><b id="m-acc">—</b></div>
+            <div><small>Updated</small><b id="m-upd">—</b></div>
+            <div><small>Trail points</small><b id="m-pts">0</b></div>
+          </div>
+
+          <div class="vstack" style="margin-top:16px">
+            <button type="button" class="btn btn-primary btn-block" id="btn-share" data-action="toggle-share">📡 Start sharing my location</button>
+            <div class="grid2">
+              <button type="button" class="btn btn-sm" data-action="demo-loc">➤ Send a demo location</button>
+              <button type="button" class="btn btn-sm" data-action="go-family">👥 Open family view</button>
+            </div>
+          </div>
+          <p class="notice hidden" id="loc-msg" style="margin-top:12px"></p>
+        </section>
+
+        <section class="card pad" aria-labelledby="tips-title">
+          <h2 id="tips-title" class="h2">♥ Good to know</h2>
+          <ul class="vstack" style="list-style:none;margin-top:14px">
+            <li class="tip"><span class="tick">✓</span><div><b>One button, one medicine</b><p>Tap the big green button straight after swallowing your tablet. It is saved instantly.</p></div></li>
+            <li class="tip"><span class="tick">✓</span><div><b>Times that suit your day</b><p>Tap “Set medicine times” to move any medicine to breakfast, lunch, bedtime or a custom time.</p></div></li>
+            <li class="tip"><span class="tick">✓</span><div><b>Family can follow along</b><p>Family members open the Family view to see the same list and the live map.</p></div></li>
+          </ul>
+        </section>
+
+        <section class="card pad" aria-labelledby="set-title">
+          <p class="eyebrow">Settings</p>
+          <h2 id="set-title" class="h3">Google Maps</h2>
+          <p class="muted" style="margin-top:6px;font-size:.9rem">Paste a Google Maps JavaScript API key to show the interactive live map. Without one, the Google Maps embed is used.</p>
+          <form class="vstack" data-form="maps-key" style="margin-top:12px">
+            <label class="field" for="maps-key-input" style="margin:0">Google Maps API key <span class="muted" style="font-weight:400">(optional)</span></label>
+            <input type="text" id="maps-key-input" name="key" autocomplete="off" spellcheck="false" placeholder="AIza…">
+            <button type="submit" class="btn btn-sm btn-block">Save key</button>
+          </form>
+          <button type="button" class="btn btn-sm btn-block" style="margin-top:12px" data-action="reset-data">Reset demo data</button>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FAMILY VIEW -->
+  <main id="view-family" class="container hidden">
+    <div class="row-between" style="margin-bottom:16px;font-size:.9rem;color:var(--ink-soft)">
+      <span>Following <b style="color:var(--ink)">Margaret Ellis</b> · family view</span>
+      <button type="button" class="btn-ghost" data-action="go-today">← Back to Mum&rsquo;s page</button>
+    </div>
+
+    <div class="layout">
+      <div class="stack">
+        <section class="card" style="overflow:hidden">
+          <div class="row-between" style="padding:22px 22px 16px">
+            <div>
+              <p class="eyebrow">Family view · live</p>
+              <h1 style="margin-top:4px;font-size:2rem">Margaret is on the map</h1>
+              <p class="muted" id="fam-sub" style="margin-top:4px;font-size:.9rem"></p>
+            </div>
+            <span class="pill ok"><span class="pulse"></span> Live on Google Maps</span>
+          </div>
+          <div style="padding:0 22px">
+            <div class="map-wrap tall">
+              <div class="map-host" id="fam-map-host"></div>
+              <span class="map-tag"><span class="pill">📍 Google Maps</span></span>
+            </div>
+          </div>
+          <div class="row-between" style="padding:20px 22px">
+            <div>
+              <div id="fam-coords" style="font-weight:700"></div>
+              <div class="muted" style="font-size:.8rem">24 Willow Lane, San Francisco</div>
+            </div>
+            <div class="actions">
+              <a class="call-btn primary" id="fam-call" href="tel:+14155550187">📞 Call Sarah</a>
+              <a class="call-btn" id="fam-gmaps" target="_blank" rel="noopener" href="#">Google Maps ↗</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="card pad">
+          <h2 class="h2">Today&rsquo;s trail</h2>
+          <ol class="vstack list" id="fam-trail" style="margin-top:12px"></ol>
+        </section>
+      </div>
+
+      <aside class="stack">
+        <section class="card pad" id="fam-person"></section>
+        <section class="card pad">
+          <h2 class="h2">Care circle</h2>
+          <ul class="list" id="fam-circle" style="margin-top:8px"></ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="container footer" style="padding-top:24px">
+    <p>EasyPill · keeping Mum independent and her family close.</p>
+    <p style="font-size:.78rem">Standalone HTML edition · data is saved in this browser · not medical advice.</p>
+  </footer>
+</div>
+
+<script>
+/* ============ Constants ============ */
+const $ = (sel) => document.querySelector(sel);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const HOUSEHOLD = { name: 'Margaret Ellis', shortName: 'Margaret', address: '24 Willow Lane, San Francisco', center: { lat: 37.7749, lng: -122.4194 } };
+const KEYS = { state: 'easypill.app.state', accounts: 'easypill.app.accounts', session: 'easypill.app.session', locks: 'easypill.app.locks' };
+const SESSION_MS = 30 * 24 * 3600 * 1000;
+const LOCK_MS = 15 * 60 * 1000;
+const MAX_FAILURES = 5;
+const PBKDF2_ITERATIONS = 150000;
+const MAX_MEDICINES = 12;
+const SLOTS = {
+  morning: { label: 'Morning', icon: '🌅', accent: '#c97a1b', soft: '#fdf3e3', ink: '#7a4708' },
+  afternoon: { label: 'Afternoon', icon: '☀️', accent: '#1f7a96', soft: '#ebf6f8', ink: '#0e4a5b' },
+  night: { label: 'Evening', icon: '🌙', accent: '#575a9b', soft: '#f0effb', ink: '#33366e' },
+};
+const PRESETS = [
+  { label: 'Breakfast 8:00 AM', time: '08:00' },
+  { label: 'Lunch 1:30 PM', time: '13:30' },
+  { label: 'Dinner 6:30 PM', time: '18:30' },
+  { label: 'Bedtime 9:00 PM', time: '21:00' },
+];
+
+/* ============ Helpers ============ */
+const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
+const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ } };
+const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const slotFor = (time) => { const h = Number(String(time).slice(0, 2)); return SLOTS[h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'night']; };
+const displayTime = (time) => { const [h, m] = time.split(':').map(Number); const h12 = h % 12 === 0 ? 12 : h % 12; return `${h12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`; };
+const clock = (iso) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+const relative = (iso) => {
+  const s = Math.max(0, Math.round((Date.now() - new Date(iso)) / 1000));
+  if (s < 20) return 'just now';
+  if (s < 60) return `${s} seconds ago`;
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  return h < 24 ? `${h} h ago` : clock(iso);
+};
+const longDate = () => new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+const mapsLink = (p) => `https://www.google.com/maps/search/?api=1&query=${p.lat.toFixed(6)},${p.lng.toFixed(6)}`;
+const mapsSearch = (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+
+/* ============ State ============ */
+function sampleTrail() {
+  const { lat, lng } = HOUSEHOLD.center;
+  const now = Date.now();
+  return [
+    { lat: lat + 0.0004, lng: lng - 0.0006, accuracy: 26, source: 'Sample walk', time: new Date(now - 24 * 60000).toISOString() },
+    { lat: lat + 0.0012, lng: lng - 0.0002, accuracy: 21, source: 'Sample walk', time: new Date(now - 14 * 60000).toISOString() },
+    { lat: lat + 0.0017, lng: lng + 0.0007, accuracy: 17, source: 'Sample walk', time: new Date(now - 6 * 60000).toISOString() },
+  ];
+}
+function defaultState() {
+  return {
+    medicines: [
+      { id: 1, name: 'Blood Pressure Tablet', dosage: 'Amlodipine 5 mg · 1 tablet', time: '08:00', notes: 'Take with a full glass of water after breakfast.', takenOn: null, takenAt: null },
+      { id: 2, name: 'Multivitamin', dosage: '1 capsule', time: '13:30', notes: 'Take after lunch with a little food.', takenOn: null, takenAt: null },
+      { id: 3, name: 'Sugar / Diabetes Pill', dosage: 'Metformin 500 mg · 1 tablet', time: '21:00', notes: 'Take 15 minutes before dinner.', takenOn: null, takenAt: null },
+    ],
+    contacts: [
+      { id: 1, name: 'Sarah Ellis', relation: 'Daughter · lives nearby', phone: '+14155550187', primary: true },
+      { id: 2, name: 'Dr. Alan Reyes', relation: 'Family doctor', phone: '+14155550142', primary: false },
+      { id: 3, name: 'Ruth Bennett', relation: 'Next-door neighbour', phone: '+14155550163', primary: false },
+    ],
+    locations: sampleTrail(),
+    nextId: 4,
+    mapsKey: '',
+    savedAt: null,
+  };
+}
+function loadState() {
+  const saved = read(KEYS.state, null);
+  if (!saved || !Array.isArray(saved.medicines)) return defaultState();
+  const merged = { ...defaultState(), ...saved };
+  const maxId = Math.max(0, ...merged.medicines.map((m) => m.id));
+  merged.nextId = Math.max(merged.nextId || 0, maxId + 1);
+  return merged;
+}
+function save() {
+  state.savedAt = new Date().toISOString();
+  write(KEYS.state, state);
+}
+const sortedMeds = () => [...state.medicines].sort((a, b) => a.time.localeCompare(b.time) || a.id - b.id);
+const findMed = (id) => state.medicines.find((m) => m.id === id);
+const isTaken = (m) => m.takenOn === todayKey();
+
+/* ============ Accounts (PBKDF2 hashes kept in this browser) ============ */
+const enc = new TextEncoder();
+const toB64 = (bytes) => btoa(String.fromCharCode(...new Uint8Array(bytes)));
+const fromB64 = (text) => Uint8Array.from(atob(text), (c) => c.charCodeAt(0));
+async function derive(password, salt, iterations) {
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, 256);
+  return toB64(bits);
+}
+function lockFor(email) {
+  const entry = read(KEYS.locks, {})[email];
+  return entry && Date.now() - entry.windowStart < LOCK_MS ? entry : null;
+}
+function isLocked(email) {
+  const entry = lockFor(email);
+  return !!entry && entry.count >= MAX_FAILURES;
+}
+function recordFailure(email) {
+  const locks = read(KEYS.locks, {});
+  const entry = lockFor(email);
+  locks[email] = entry ? { count: entry.count + 1, windowStart: entry.windowStart } : { count: 1, windowStart: Date.now() };
+  write(KEYS.locks, locks);
+}
+function clearFailures(email) {
+  const locks = read(KEYS.locks, {});
+  delete locks[email];
+  write(KEYS.locks, locks);
+}
+async function createAccount(name, email, password) {
+  if (name.length < 2 || name.length > 60) return { ok: false, error: 'Please enter your name (2 to 60 characters).' };
+  if (email.length > 120 || !EMAIL_RE.test(email)) return { ok: false, error: 'Please enter a valid email address.' };
+  if (password.length < 8 || password.length > 128) return { ok: false, error: 'Your password must be at least 8 characters.' };
+  const accounts = read(KEYS.accounts, []);
+  if (accounts.some((a) => a.email === email)) return { ok: false, error: 'An account with this email already exists. Please sign in instead.' };
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  accounts.push({ email, name, salt: toB64(salt), iterations: PBKDF2_ITERATIONS, hash: await derive(password, salt, PBKDF2_ITERATIONS) });
+  write(KEYS.accounts, accounts);
+  return { ok: true, user: { email, name } };
+}
+async function signIn(email, password) {
+  if (isLocked(email)) return { ok: false, error: 'Too many attempts. Please wait 15 minutes and try again.' };
+  const account = read(KEYS.accounts, []).find((a) => a.email === email);
+  // Always run the hash so response time does not reveal whether the email exists.
+  const salt = account ? fromB64(account.salt) : crypto.getRandomValues(new Uint8Array(16));
+  const hash = await derive(password, salt, account ? account.iterations : PBKDF2_ITERATIONS);
+  if (!account || hash !== account.hash) {
+    recordFailure(email);
+    return { ok: false, error: 'That email and password do not match. Please try again.' };
+  }
+  clearFailures(email);
+  return { ok: true, user: { email: account.email, name: account.name } };
+}
+function readSession() {
+  const session = read(KEYS.session, null);
+  if (!session || !session.expires || session.expires < Date.now()) {
+    localStorage.removeItem(KEYS.session);
+    return null;
+  }
+  return session;
+}
+function startSession(user) { write(KEYS.session, { ...user, expires: Date.now() + SESSION_MS }); }
+function endSession() { localStorage.removeItem(KEYS.session); }
+
+/* ============ UI state ============ */
+let state = loadState();
+const ui = { view: 'today', authMode: 'signin', timesOpen: false, editMode: false, adding: false, editingId: null, deleteArmedId: null, sharing: false, watchId: null, notice: null, locMsg: null };
+let mapsReady = false;
+let mapsFailed = false;
+let mapsLoad = null;
+let noticeTimer = null;
+
+function flash(text, kind = 'ok') {
+  ui.notice = { text, kind };
+  renderNotice();
+  clearTimeout(noticeTimer);
+  noticeTimer = setTimeout(() => { ui.notice = null; renderNotice(); }, 4500);
+}
+function setLocMsg(text, kind = 'ok') {
+  ui.locMsg = { text, kind };
+  renderLocMsg();
+}
+
+/* ============ Rendering: sign-in ============ */
+function renderAuth() {
+  const signup = ui.authMode === 'signup';
+  $('#auth-card').innerHTML = `
+    <div class="tabs" role="tablist" aria-label="Sign in or create an account">
+      <button type="button" class="tab" role="tab" aria-selected="${!signup}" data-action="auth-mode" data-mode="signin">Sign in</button>
+      <button type="button" class="tab" role="tab" aria-selected="${signup}" data-action="auth-mode" data-mode="signup">Create account</button>
+    </div>
+    <h2 style="margin-top:24px;font-size:1.7rem">${signup ? 'Create your EasyPill account' : 'Welcome back'}</h2>
+    <p class="muted" style="margin-top:6px">${signup ? 'Use your own email. Each family member can have their own account.' : "Sign in to see today's medicines and the live map."}</p>
+    <form class="vstack" data-form="auth" novalidate style="margin-top:22px;gap:16px">
+      ${signup ? `<div><label class="field" for="a-name">Your name</label><input id="a-name" name="name" type="text" autocomplete="name" maxlength="60" placeholder="e.g. Sarah Ellis"></div>` : ''}
+      <div><label class="field" for="a-email">Email address</label><input id="a-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" placeholder="you@example.com"></div>
+      <div>
+        <label class="field" for="a-pass">Password</label>
+        <input id="a-pass" name="password" type="password" autocomplete="${signup ? 'new-password' : 'current-password'}" maxlength="128" placeholder="${signup ? 'At least 8 characters' : 'Your password'}">
+        <label class="check"><input type="checkbox" id="a-show"> Show password</label>
+      </div>
+      <p class="err hidden" id="auth-error" role="alert"></p>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">${signup ? '✓ Create account and continue' : '✓ Sign in'}</button>
+    </form>`;
+}
+
+async function handleAuth(form) {
+  const data = new FormData(form);
+  const name = String(data.get('name') || '').trim();
+  const email = String(data.get('email') || '').trim().toLowerCase();
+  const password = String(data.get('password') || '');
+  const errorEl = $('#auth-error');
+  const button = form.querySelector('button[type="submit"]');
+  const showError = (text) => { errorEl.textContent = text; errorEl.classList.remove('hidden'); };
+  errorEl.classList.add('hidden');
+
+  if (!window.crypto || !crypto.subtle) return showError('This browser cannot protect passwords here. Open EasyPill over https:// or localhost.');
+  if (!email || !password) return showError('Please enter your email and password.');
+
+  button.disabled = true;
+  button.textContent = 'Please wait…';
+  try {
+    const result = ui.authMode === 'signup' ? await createAccount(name, email, password) : await signIn(email, password);
+    if (!result.ok) return showError(result.error);
+    startSession(result.user);
+    showApp(result.user);
+  } catch (error) {
+    showError('Something went wrong. Please try again.');
+  } finally {
+    button.disabled = false;
+    button.textContent = ui.authMode === 'signup' ? '✓ Create account and continue' : '✓ Sign in';
+  }
+}
+
+function showAuth() {
+  $('#app').classList.add('hidden');
+  $('#auth').classList.remove('hidden');
+  renderAuth();
+}
+
+function showApp(user) {
+  $('#auth').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  $('#user-name').textContent = user.name;
+  $('#user-initials').textContent = initials(user.name);
+  $('#maps-key-input').value = state.mapsKey || '';
+  switchView('today');
+  renderAll();
+}
+
+function signOut() {
+  endSession();
+  stopSharing(false);
+  showAuth();
+}
+
+/* ============ Rendering: Today ============ */
+function renderAll() {
+  renderToday();
+  renderHelp();
+  renderLocation();
+  renderFamily();
+  renderNotice();
+}
+
+function renderToday() {
+  renderHero();
+  renderTimes();
+  renderMeds();
+}
+
+function ringSvg(taken, total) {
+  const circumference = 2 * Math.PI * 57;
+  const ratio = total ? taken / total : 0;
+  return `<div class="ring">
+    <svg width="124" height="124" viewBox="0 0 124 124" aria-hidden="true">
+      <circle cx="62" cy="62" r="57" fill="none" stroke="rgba(255,253,248,.22)" stroke-width="10"></circle>
+      <circle cx="62" cy="62" r="57" fill="none" stroke="#f0d8ac" stroke-width="10" stroke-linecap="round" stroke-dasharray="${circumference.toFixed(2)}" stroke-dashoffset="${(circumference * (1 - ratio)).toFixed(2)}" style="transition:stroke-dashoffset .45s ease"></circle>
+    </svg>
+    <div class="ring-c"><div class="ring-n">${taken}<span>/${total}</span></div><div class="ring-l">${total && taken === total ? 'All done' : 'Taken'}</div></div>
+  </div>`;
+}
+
+function renderHero() {
+  const meds = sortedMeds();
+  const total = meds.length;
+  const taken = meds.filter(isTaken).length;
+  const left = total - taken;
+  const next = meds.find((m) => !isTaken(m));
+  const desc = total > 0 && left === 0
+    ? 'Every medicine is ticked off for today. Lovely work — nothing else to take.'
+    : `${left} ${left === 1 ? 'dose' : 'doses'} left today. Tap the green button after each medicine.`;
+  $('#hero').innerHTML = `
+    <div class="hero-in">
+      <div>
+        <p class="eyebrow">${longDate()}</p>
+        <h1>Mum&rsquo;s medicine plan</h1>
+        <p class="hero-desc">${desc}</p>
+        <div class="chips">
+          <span class="chip">⏰ ${next ? 'Next: ' + displayTime(next.time) : 'All doses complete'}</span>
+          <span class="chip">💊 ${taken} of ${total} taken</span>
+          <span class="chip">✓ ${state.savedAt ? 'Saved ' + clock(state.savedAt) : 'Saved in this browser'}</span>
+        </div>
+      </div>
+      ${ringSvg(taken, total)}
+    </div>`;
+}
+
+function timeRow(m) {
+  const s = slotFor(m.time);
+  return `<div class="row-t" data-time-scope>
+    <div>
+      <label class="field" style="margin:0" for="bulk-${m.id}">${esc(m.name)}</label>
+      <span data-hint style="font-size:.8rem;font-weight:700;color:${s.ink}">${s.icon} ${s.label} · ${displayTime(m.time)}</span>
+    </div>
+    <div class="actions" style="align-items:center">
+      <input type="time" id="bulk-${m.id}" data-bulk="${m.id}" value="${m.time}">
+      ${PRESETS.map((p) => `<button type="button" class="circ${p.time === m.time ? ' on' : ''}" data-action="preset" data-preset data-time="${p.time}" title="${p.label}" aria-label="${esc(m.name)}: ${p.label}">${slotFor(p.time).icon}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderTimes() {
+  const panel = $('#times-panel');
+  panel.classList.toggle('hidden', !ui.timesOpen);
+  $('#btn-times').classList.toggle('on', ui.timesOpen);
+  if (!ui.timesOpen) {
+    panel.innerHTML = '';
+    return;
+  }
+  panel.innerHTML = `
+    <div class="row-between">
+      <div>
+        <p class="eyebrow" style="color:var(--green-deep)">Step 1 of your day</p>
+        <h3 style="margin-top:4px;font-size:1.5rem">Set the time you take each medicine</h3>
+        <p class="muted" style="margin-top:6px;font-size:.9rem">Change any time and press <b style="color:var(--ink)">Save all times</b>. The morning, afternoon and evening groups update automatically.</p>
+      </div>
+      <button type="button" class="circ" data-action="close-times" aria-label="Close time settings">✕</button>
+    </div>
+    <div class="vstack" style="margin-top:16px">${sortedMeds().map(timeRow).join('')}</div>
+    <div class="actions" style="margin-top:16px;align-items:center">
+      <button type="button" class="btn btn-primary" data-action="save-times">✓ Save all times</button>
+      <button type="button" class="btn" data-action="close-times">Close</button>
+      <span class="pill ok">Used every day</span>
+    </div>`;
+}
+
+function editorHtml(m) {
+  const isNew = !m;
+  const id = isNew ? 'new' : m.id;
+  const t = isNew ? '08:00' : m.time;
+  const s = slotFor(t);
+  return `<form class="editor" data-form="medicine" data-mode="${isNew ? 'add' : 'edit'}" data-id="${id}" novalidate>
+    <p class="eyebrow" style="color:var(--green-deep)">${isNew ? 'Add a medicine and its time' : 'Change this medicine'}</p>
+    <div data-time-scope data-long="1" style="margin-top:12px">
+      <label class="field" for="ed-time-${id}">What time do you take it?</label>
+      <input type="time" id="ed-time-${id}" class="time-input" name="time" value="${t}">
+      <div class="presets" style="margin-top:10px">
+        ${PRESETS.map((p) => `<button type="button" class="chip-btn${p.time === t ? ' on' : ''}" data-action="preset" data-preset data-time="${p.time}">${p.label}</button>`).join('')}
+      </div>
+      <span class="hint" data-hint style="color:${s.ink}">${s.icon} Sits in your ${s.label} list · ${displayTime(t)}</span>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <label class="field" for="ed-name-${id}">Medicine name</label>
+        <input type="text" id="ed-name-${id}" name="name" maxlength="60" value="${esc(isNew ? '' : m.name)}" placeholder="e.g. Blood pressure tablet">
+      </div>
+      <div>
+        <label class="field" for="ed-dose-${id}">Dose</label>
+        <input type="text" id="ed-dose-${id}" name="dosage" maxlength="60" value="${esc(isNew ? '1 tablet' : m.dosage)}" placeholder="e.g. 1 tablet after food">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label class="field" for="ed-notes-${id}">Reminder for yourself <span class="muted" style="font-weight:400">(optional)</span></label>
+      <textarea id="ed-notes-${id}" name="notes" maxlength="160" placeholder="e.g. Take with a glass of water">${esc(isNew ? '' : m.notes)}</textarea>
+    </div>
+    <p class="err hidden" data-error role="alert"></p>
+    <div class="actions" style="margin-top:16px">
+      <button type="submit" class="btn btn-primary">✓ ${isNew ? 'Save this medicine' : 'Save new time'}</button>
+      <button type="button" class="btn btn-ghost" data-action="cancel-editor">Cancel</button>
+    </div>
+    ${isNew ? '' : deleteHtml(m)}
+  </form>`;
+}
+
+function deleteHtml(m) {
+  if (ui.deleteArmedId === m.id) {
+    return `<div class="danger-zone actions" style="align-items:center">
+      <span style="font-weight:700;color:var(--clay);margin-right:auto">Remove this medicine for good?</span>
+      <button type="button" class="btn btn-danger btn-sm" data-action="confirm-delete" data-id="${m.id}">Yes, remove it</button>
+      <button type="button" class="btn btn-sm" data-action="cancel-delete">Keep it</button>
+    </div>`;
+  }
+  return `<div class="danger-zone">
+    <button type="button" class="btn-ghost" style="color:var(--clay);font-weight:700;text-decoration:underline" data-action="arm-delete" data-id="${m.id}">Remove this medicine</button>
+  </div>`;
+}
+
+function medCard(m) {
+  const taken = isTaken(m);
+  const s = slotFor(m.time);
+  const editing = ui.editingId === m.id;
+  const status = taken
+    ? `<span class="pill ok">✓ Taken${m.takenAt ? ' at ' + clock(m.takenAt) : ''}</span>`
+    : `<span class="pill">⏰ Due ${displayTime(m.time)}</span>`;
+  const body = editing ? editorHtml(m) : `
+    <h3>${esc(m.name)}</h3>
+    <p class="dose">${esc(m.dosage)}</p>
+    <p class="notes">${esc(m.notes)}</p>
+    ${taken
+      ? `<div class="done-row"><div class="done-msg">✓ Done — don’t take this again today</div><button type="button" class="btn" data-action="toggle-take" data-id="${m.id}">Undo</button></div>`
+      : `<button type="button" class="take" data-action="toggle-take" data-id="${m.id}">✓ I took my ${s.label.toLowerCase()} medicine</button>`}
+    <button type="button" class="edit-btn" data-action="edit" data-id="${m.id}">✎ Change time or details</button>`;
+  return `<article class="med${taken ? ' done' : ''}">
+    <span class="stripe" style="background:${taken ? '#7fae8d' : s.accent}"></span>
+    <div class="med-body">
+      <div class="med-top">
+        <div class="slot">
+          <span class="slot-ic" style="background:${taken ? '#e3eee5' : s.soft};color:${taken ? '#4f7a5f' : s.ink}">${s.icon}</span>
+          <div>
+            <p class="eyebrow" style="color:${s.ink}">${s.label}</p>
+            <button type="button" class="time-btn" data-action="edit" data-id="${m.id}">${displayTime(m.time)} ✎</button>
+          </div>
+        </div>
+        ${status}
+      </div>
+      ${body}
+    </div>
+  </article>`;
+}
+
+function renderMeds() {
+  const meds = sortedMeds();
+  $('#meds').innerHTML = meds.length
+    ? meds.map(medCard).join('')
+    : `<div class="card pad" style="text-align:center">
+        <p style="font-size:2rem">💊</p>
+        <h3 class="h3" style="margin-top:8px">No medicines yet</h3>
+        <p class="muted" style="margin-top:4px">Add your first medicine and choose the time you take it.</p>
+        <div style="margin-top:16px"><button type="button" class="btn btn-primary" data-action="start-add">+ Add a medicine</button></div>
+      </div>`;
+  $('#add-slot').innerHTML = ui.adding ? editorHtml(null) : '';
+  $('#btn-edit').textContent = ui.editMode ? '✓ Done editing' : '✎ Add or remove';
+  $('#btn-edit').classList.toggle('on', ui.editMode);
+  $('#sched-title').textContent = ui.editMode ? 'Set the times that suit you' : 'Your daily schedule';
+  $('#btn-add').classList.toggle('hidden', !ui.editMode || ui.adding);
+}
+
+function renderNotice() {
+  const el = $('#notice');
+  if (!ui.notice) {
+    el.classList.add('hidden');
+    return;
+  }
+  el.className = 'notice' + (ui.notice.kind === 'err' ? ' err' : '');
+  $('#notice-text').textContent = ui.notice.text;
+}
+
+function renderHelp() {
+  const primary = state.contacts.find((c) => c.primary) || state.contacts[0];
+  $('#call-primary').href = primary ? `tel:${primary.phone}` : 'tel:911';
+  $('#call-primary').textContent = primary ? `📞 Call ${primary.name.split(' ')[0]}` : '📞 Call';
+  $('#help').innerHTML = `
+    <div class="help-head">
+      <h2 class="h3" style="color:var(--clay)">⚠ Need help?</h2>
+      <p style="margin-top:4px;font-size:.9rem;color:rgba(180,69,47,.9)">Feeling unwell or unsteady on your feet? Call for help first — the medicine can wait.</p>
+    </div>
+    <div class="help-body">
+      <a class="emergency" href="tel:911">📞 Call 911 — emergency</a>
+      <ul class="list">
+        ${state.contacts.map((c) => `<li class="contact">
+          <div><div style="font-weight:700">${esc(c.name)}</div><div class="muted" style="font-size:.875rem">${esc(c.relation)}</div></div>
+          <a class="call-btn${c.primary ? ' primary' : ''}" href="tel:${esc(c.phone)}" aria-label="Call ${esc(c.name)}">📞 Call</a>
+        </li>`).join('')}
+      </ul>
+      <p style="font-size:.78rem;color:var(--ink-soft);background:var(--cream);border-radius:12px;padding:10px 12px">EasyPill is a reminder tool and not a replacement for your doctor’s advice.</p>
+    </div>`;
+}
+
+/* ============ Rendering: location and family ============ */
+function renderLocMsg() {
+  const el = $('#loc-msg');
+  if (!ui.locMsg) {
+    el.classList.add('hidden');
+    return;
+  }
+  el.className = 'notice' + (ui.locMsg.kind === 'err' ? ' err' : '');
+  el.style.marginTop = '12px';
+  el.textContent = ui.locMsg.text;
+}
+
+function renderLocation() {
+  const latest = state.locations.at(-1);
+  const pill = $('#loc-pill');
+  pill.className = 'pill' + (ui.sharing ? ' ok' : '');
+  pill.innerHTML = ui.sharing ? '<span class="pulse"></span> Sharing' : 'Paused';
+  const btn = $('#btn-share');
+  btn.className = 'btn btn-block' + (ui.sharing ? ' stop' : ' btn-primary');
+  btn.textContent = ui.sharing ? '■ Stop sharing my location' : '📡 Start sharing my location';
+  $('#m-acc').textContent = latest && latest.accuracy ? `${Math.round(latest.accuracy)} m` : '—';
+  $('#m-upd').textContent = latest ? relative(latest.time) : '—';
+  $('#m-pts').textContent = String(state.locations.length);
+  $('#foot-name').textContent = HOUSEHOLD.name;
+  $('#foot-coords').textContent = latest ? `${latest.lat.toFixed(5)}, ${latest.lng.toFixed(5)}` : HOUSEHOLD.address;
+  $('#foot-acc').textContent = latest && latest.accuracy ? `Accurate to about ${Math.round(latest.accuracy)} m` : '';
+  $('#foot-link').href = latest ? mapsLink(latest) : mapsSearch(HOUSEHOLD.address);
+  $('#loc-foot').classList.toggle('hidden', !latest);
+  liveMap.update(state.locations);
+  renderLocMsg();
+}
+
+function famMedRow(m) {
+  const s = slotFor(m.time);
+  const done = isTaken(m);
+  return `<li class="item">
+    <div>
+      <div style="font-weight:700;font-size:.9rem">${esc(m.name)}</div>
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${s.ink}">${s.label} · ${displayTime(m.time)}</div>
+    </div>
+    ${done
+      ? `<span class="pill ok" style="font-size:.75rem;padding:4px 10px">✓ ${m.takenAt ? clock(m.takenAt) : 'Taken'}</span>`
+      : `<span class="pill" style="font-size:.75rem;padding:4px 10px">Due</span>`}
+  </li>`;
+}
+
+function renderFamily() {
+  const meds = sortedMeds();
+  const total = meds.length;
+  const taken = meds.filter(isTaken).length;
+  const pct = total ? Math.round((taken / total) * 100) : 0;
+  const latest = state.locations.at(-1);
+
+  $('#fam-sub').textContent = latest
+    ? `Last update ${relative(latest.time)} · ${state.locations.length} points on today’s trail`
+    : 'Waiting for the first location.';
+  $('#fam-coords').textContent = latest ? `${latest.lat.toFixed(4)}, ${latest.lng.toFixed(4)}` : HOUSEHOLD.address;
+  $('#fam-gmaps').href = latest ? mapsLink(latest) : mapsSearch(HOUSEHOLD.address);
+  const primary = state.contacts.find((c) => c.primary) || state.contacts[0];
+  $('#fam-call').href = primary ? `tel:${primary.phone}` : 'tel:911';
+  $('#fam-call').textContent = primary ? `📞 Call ${primary.name.split(' ')[0]}` : '📞 Call';
+
+  $('#fam-trail').innerHTML = state.locations.length
+    ? [...state.locations].reverse().slice(0, 5).map((p, i) => `<li class="item">
+        <div>
+          <div style="font-weight:700;font-size:.9rem">${i === 0 ? 'Current location' : esc(p.source)}</div>
+          <div class="mono" style="color:var(--ink-soft)">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</div>
+        </div>
+        <span style="font-size:.8rem;font-weight:600;color:var(--ink-soft)">${clock(p.time)}</span>
+      </li>`).join('')
+    : '<li class="item">No location shared yet.</li>';
+
+  $('#fam-person').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="avatar" style="width:48px;height:48px;font-size:1.1rem">ME</span>
+      <div><h2 class="h3">${esc(HOUSEHOLD.name)}</h2><p class="muted" style="font-size:.8rem;font-weight:600">Mother · 78 years</p></div>
+    </div>
+    <div class="row-between" style="margin-top:16px;font-size:.9rem;font-weight:700">
+      <span>${taken} of ${total} medicines taken</span><span style="color:var(--green)">${pct}%</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    <ul class="vstack list" style="margin-top:16px">${meds.map(famMedRow).join('')}</ul>
+    <button type="button" class="btn btn-block btn-dark" style="margin-top:16px" data-action="go-today">Open Mum&rsquo;s EasyPill</button>`;
+
+  $('#fam-circle').innerHTML = state.contacts.map((c) => `<li class="contact">
+      <div><div style="font-weight:700;font-size:.95rem">${esc(c.name)}</div><div class="muted" style="font-size:.8rem">${esc(c.relation)}</div></div>
+      <a class="call-btn" href="tel:${esc(c.phone)}">📞 Call</a>
+    </li>`).join('');
+
+  famMap.update(state.locations);
+}
+
+function switchView(view) {
+  ui.view = view;
+  $('#view-today').classList.toggle('hidden', view !== 'today');
+  $('#view-family').classList.toggle('hidden', view !== 'family');
+  document.querySelectorAll('[data-nav]').forEach((b) => {
+    if (b.dataset.nav === view) b.setAttribute('aria-current', 'page');
+    else b.removeAttribute('aria-current');
+  });
+  if (view === 'family') renderFamily();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============ Medicine actions ============ */
+function toggleTaken(id) {
+  const m = findMed(id);
+  if (!m) return;
+  if (isTaken(m)) {
+    m.takenOn = null;
+    m.takenAt = null;
+    flash(`${m.name} moved back to not taken.`);
+  } else {
+    m.takenOn = todayKey();
+    m.takenAt = new Date().toISOString();
+    flash(`${m.name} marked as taken. Your family can see this.`);
+  }
+  save();
+  renderToday();
+  renderFamily();
+}
+
+function saveMedicine(form) {
+  const data = new FormData(form);
+  const isAdd = form.dataset.mode === 'add';
+  const id = Number(form.dataset.id);
+  const time = String(data.get('time') || '');
+  const name = String(data.get('name') || '').trim();
+  const dosage = String(data.get('dosage') || '').trim() || '1 dose';
+  const notes = String(data.get('notes') || '').trim() || 'Take as your doctor advised.';
+  const errorEl = form.querySelector('[data-error]');
+  const fail = (text) => { errorEl.textContent = text; errorEl.classList.remove('hidden'); };
+
+  if (name.length < 2) return fail('Please enter the medicine name (at least 2 letters).');
+  if (!TIME_RE.test(time)) return fail('Please choose the time you take this medicine.');
+
+  if (isAdd) {
+    if (state.medicines.length >= MAX_MEDICINES) return fail(`You can track up to ${MAX_MEDICINES} medicines. Remove one first.`);
+    state.medicines.push({ id: state.nextId++, name, dosage, time, notes, takenOn: null, takenAt: null });
+    flash(`${name} added for ${displayTime(time)} every day.`);
+  } else {
+    const med = findMed(id);
+    if (!med) return fail('This medicine no longer exists.');
+    Object.assign(med, { name, dosage, time, notes });
+    flash(`${name} is now set for ${displayTime(time)}.`);
+  }
+  ui.editingId = null;
+  ui.adding = false;
+  ui.deleteArmedId = null;
+  save();
+  renderToday();
+  renderFamily();
+}
+
+function saveAllTimes() {
+  const inputs = [...document.querySelectorAll('[data-bulk]')];
+  if (inputs.some((input) => !TIME_RE.test(input.value))) {
+    flash('Please choose a valid time for every medicine.', 'err');
+    return;
+  }
+  inputs.forEach((input) => {
+    const med = findMed(Number(input.dataset.bulk));
+    if (med) med.time = input.value;
+  });
+  save();
+  ui.timesOpen = false;
+  flash(`Saved all ${inputs.length} medicine times for every day.`);
+  renderToday();
+  renderFamily();
+}
+
+function removeMedicine(id) {
+  const med = findMed(id);
+  state.medicines = state.medicines.filter((m) => m.id !== id);
+  ui.editingId = null;
+  ui.deleteArmedId = null;
+  ui.adding = false;
+  save();
+  flash(`${med ? med.name : 'Medicine'} removed from your schedule.`);
+  renderToday();
+  renderFamily();
+}
+
+function saveMapsKey(form) {
+  const key = String(new FormData(form).get('key') || '').trim();
+  state.mapsKey = key;
+  save();
+  if (key) {
+    flash('Google Maps key saved. Reloading to show the interactive map…');
+    setTimeout(() => location.reload(), 1200);
+  } else {
+    mapsFailed = false;
+    liveMap.reset();
+    famMap.reset();
+    flash('Using the Google Maps embed (no key).');
+    renderLocation();
+    renderFamily();
+  }
+}
+
+function resetData() {
+  if (!confirm('Reset all medicines, times, contacts and location history in this browser to the demo data?')) return;
+  const key = state.mapsKey;
+  state = defaultState();
+  state.mapsKey = key;
+  save();
+  ui.editingId = null;
+  ui.adding = false;
+  ui.timesOpen = false;
+  ui.deleteArmedId = null;
+  flash('Demo data restored.');
+  renderAll();
+}
+
+/* ============ Location sharing ============ */
+function addLocation(lat, lng, accuracy, source) {
+  state.locations.push({
+    lat: Number(lat.toFixed(6)),
+    lng: Number(lng.toFixed(6)),
+    accuracy: Math.round(accuracy || 20),
+    source,
+    time: new Date().toISOString(),
+  });
+  state.locations = state.locations.slice(-60);
+  save();
+  renderLocation();
+  renderFamily();
+}
+
+function startSharing() {
+  if (!navigator.geolocation) {
+    setLocMsg('This browser cannot read GPS. Use “Send a demo location” instead.', 'err');
+    return;
+  }
+  ui.sharing = true;
+  setLocMsg('Finding your location…');
+  renderLocation();
+  ui.watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const { latitude: lat, longitude: lng, accuracy } = pos.coords;
+      const last = state.locations.at(-1);
+      const moved = !last || Math.hypot(last.lat - lat, last.lng - lng) > 0.00015; // about 15 m
+      const stale = !last || Date.now() - new Date(last.time) > 10000;
+      if (moved || stale) addLocation(lat, lng, accuracy, 'Phone GPS');
+      setLocMsg('Live: your location is updating on the map.');
+    },
+    (err) => {
+      stopSharing(false);
+      setLocMsg(
+        err.code === 1
+          ? 'Location permission is blocked. Allow location for this site in your browser settings, then try again.'
+          : 'We could not read your location. Move somewhere with a clearer signal and try again.',
+        'err',
+      );
+    },
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 },
+  );
+}
+
+function stopSharing(announce = true) {
+  if (ui.watchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(ui.watchId);
+  ui.watchId = null;
+  ui.sharing = false;
+  if (announce) setLocMsg('Sharing paused. Your family keeps the last place you shared.');
+  renderLocation();
+}
+
+function sendDemoLocation() {
+  const last = state.locations.at(-1) || { lat: HOUSEHOLD.center.lat, lng: HOUSEHOLD.center.lng };
+  setLocMsg('Demo location pinned on the map. Open the family view to see the trail.');
+  addLocation(last.lat + (Math.random() - 0.5) * 0.0009, last.lng + (Math.random() - 0.5) * 0.0009, 19, 'Demo');
+}
+
+/* ============ Google Maps (JavaScript API with key, embed without) ============ */
+class MapView {
+  constructor(host) {
+    this.host = host;
+    this.mode = null;
+    this.g = null;
+  }
+  reset() {
+    this.mode = null;
+    this.g = null;
+    this.host.innerHTML = '';
+  }
+  show(mode) {
+    if (this.mode === mode) return;
+    this.mode = mode;
+    this.g = null;
+    if (mode === 'empty') {
+      this.host.innerHTML = '<div class="map-empty"><span class="pill ok">📍 Ready</span><b>No location shared yet</b><span class="muted">Tap “Start sharing my location” to place your dot on the map.</span></div>';
+    } else if (mode === 'js') {
+      this.host.innerHTML = '<div class="gm-canvas"></div>';
+    } else {
+      this.host.innerHTML = '';
+    }
+  }
+  update(points) {
+    const latest = points.at(-1);
+    if (!latest) return this.show('empty');
+    if (state.mapsKey && mapsReady && !mapsFailed) return this.drawJs(points);
+    return this.drawEmbed(latest);
+  }
+  drawEmbed(p) {
+    this.show('embed');
+    const src = `https://maps.google.com/maps?q=${p.lat.toFixed(6)},${p.lng.toFixed(6)}&z=16&hl=en&t=m&output=embed`;
+    let frame = this.host.querySelector('iframe');
+    if (!frame) {
+      frame = document.createElement('iframe');
+      frame.title = 'Google Maps live location';
+      frame.loading = 'lazy';
+      frame.referrerPolicy = 'no-referrer-when-downgrade';
+      this.host.appendChild(frame);
+    }
+    if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
+  }
+  drawJs(points) {
+    this.show('js');
+    const latest = points.at(-1);
+    const center = { lat: latest.lat, lng: latest.lng };
+    const signature = `${points.length}|${latest.time}`;
+    if (!this.g) {
+      const canvas = this.host.querySelector('.gm-canvas');
+      const map = new google.maps.Map(canvas, {
+        center,
+        zoom: 16,
+        disableDefaultUI: true,
+        zoomControl: true,
+        fullscreenControl: true,
+        gestureHandling: 'greedy',
+        clickableIcons: false,
+      });
+      this.g = {
+        map,
+        marker: new google.maps.Marker({
+          map,
+          position: center,
+          title: HOUSEHOLD.name,
+          icon: { path: google.maps.SymbolPath.CIRCLE, scale: 9, fillColor: '#2e6b4f', fillOpacity: 1, strokeColor: '#fffdf8', strokeWeight: 3 },
+        }),
+        line: new google.maps.Polyline({ map, strokeColor: '#2e6b4f', strokeOpacity: 0.85, strokeWeight: 4 }),
+        circle: new google.maps.Circle({ map, center, radius: 25, strokeColor: '#2e6b4f', strokeOpacity: 0.35, strokeWeight: 1, fillColor: '#2e6b4f', fillOpacity: 0.12 }),
+        signature: '',
+        fitted: false,
+      };
+    }
+    const g = this.g;
+    if (g.signature === signature) return; // nothing new: keep the user's map view
+    g.signature = signature;
+    g.marker.setPosition(center);
+    g.line.setPath(points.map((p) => ({ lat: p.lat, lng: p.lng })));
+    g.circle.setCenter(center);
+    g.circle.setRadius(Math.max(15, Math.min(latest.accuracy || 25, 2000)));
+    if (!g.fitted && points.length > 1) {
+      const bounds = new google.maps.LatLngBounds();
+      points.forEach((p) => bounds.extend({ lat: p.lat, lng: p.lng }));
+      g.map.fitBounds(bounds, 48);
+      g.fitted = true;
+    } else {
+      g.map.panTo(center);
+    }
+  }
+}
+
+const liveMap = new MapView($('#loc-map-host'));
+const famMap = new MapView($('#fam-map-host'));
+
+window.gm_authFailure = () => {
+  mapsFailed = true;
+  flash('Google Maps did not accept this key. Showing the embedded map instead.', 'err');
+  renderLocation();
+  renderFamily();
+};
+
+function startMaps() {
+  if (!state.mapsKey || mapsLoad) return;
+  mapsLoad = new Promise((resolve, reject) => {
+    window.__easypillMapsReady = resolve;
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(state.mapsKey)}&v=weekly&callback=__easypillMapsReady`;
+    script.onerror = () => reject(new Error('Google Maps failed to load'));
+    document.head.appendChild(script);
+  });
+  mapsLoad
+    .then(() => { mapsReady = true; renderLocation(); renderFamily(); })
+    .catch(() => { mapsFailed = true; renderLocation(); renderFamily(); });
+}
+
+/* ============ Events ============ */
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const id = Number(el.dataset.id);
+  switch (el.dataset.action) {
+    case 'auth-mode': ui.authMode = el.dataset.mode; renderAuth(); break;
+    case 'sign-out': signOut(); break;
+    case 'go-today': switchView('today'); break;
+    case 'go-family': switchView('family'); break;
+    case 'toggle-take': toggleTaken(id); break;
+    case 'edit': ui.editingId = id; ui.adding = false; ui.timesOpen = false; ui.deleteArmedId = null; renderToday(); break;
+    case 'cancel-editor': ui.editingId = null; ui.adding = false; ui.deleteArmedId = null; renderToday(); break;
+    case 'open-add':
+      ui.adding = true; ui.editingId = null; ui.timesOpen = false;
+      renderToday();
+      document.getElementById('add-slot').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      break;
+    case 'start-add': ui.editMode = true; ui.adding = true; renderToday(); break;
+    case 'arm-delete': ui.deleteArmedId = id; renderToday(); break;
+    case 'cancel-delete': ui.deleteArmedId = null; renderToday(); break;
+    case 'confirm-delete': removeMedicine(id); break;
+    case 'toggle-edit':
+      ui.editMode = !ui.editMode; ui.timesOpen = false; ui.editingId = null; ui.adding = false; ui.deleteArmedId = null;
+      renderToday();
+      break;
+    case 'toggle-times':
+      ui.timesOpen = !ui.timesOpen; ui.editMode = false; ui.editingId = null; ui.adding = false;
+      renderToday();
+      break;
+    case 'close-times': ui.timesOpen = false; renderTimes(); break;
+    case 'save-times': saveAllTimes(); break;
+    case 'preset': {
+      const scope = el.closest('[data-time-scope]');
+      const input = scope.querySelector('input[type="time"]');
+      input.value = el.dataset.time;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      break;
+    }
+    case 'toggle-share':
+      if (ui.sharing) stopSharing();
+      else startSharing();
+      break;
+    case 'demo-loc': sendDemoLocation(); break;
+    case 'reset-data': resetData(); break;
+    case 'hide-notice': ui.notice = null; renderNotice(); break;
+  }
+});
+
+document.addEventListener('submit', (e) => {
+  const form = e.target;
+  const kind = form.dataset.form;
+  if (!kind) return;
+  e.preventDefault();
+  if (kind === 'auth') handleAuth(form);
+  if (kind === 'medicine') saveMedicine(form);
+  if (kind === 'maps-key') saveMapsKey(form);
+});
+
+document.addEventListener('input', (e) => {
+  const input = e.target;
+  if (input.type !== 'time') return;
+  const scope = input.closest('[data-time-scope]');
+  if (!scope) return;
+  const t = input.value;
+  const valid = TIME_RE.test(t);
+  const s = valid ? slotFor(t) : null;
+  const hint = scope.querySelector('[data-hint]');
+  if (hint) {
+    hint.style.color = s ? s.ink : 'var(--clay)';
+    hint.textContent = !valid
+      ? 'Choose a time'
+      : scope.dataset.long === '1'
+        ? `${s.icon} Sits in your ${s.label} list · ${displayTime(t)}`
+        : `${s.icon} ${s.label} · ${displayTime(t)}`;
+  }
+  scope.querySelectorAll('[data-preset]').forEach((b) => b.classList.toggle('on', b.dataset.time === t));
+});
+
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'a-show') $('#a-pass').type = e.target.checked ? 'text' : 'password';
+});
+
+/* ============ Boot ============ */
+setInterval(() => { renderHero(); renderLocation(); renderFamily(); }, 30000);
+
+(function boot() {
+  const session = readSession();
+  if (session) showApp(session);
+  else showAuth();
+  startMaps();
+})();
+</script>
+</body>
+</html>

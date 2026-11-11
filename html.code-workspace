@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../html"
+		},
+		{
+			"path": "../Med app"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "html"
+	}
+}
